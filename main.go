@@ -36,3 +36,18 @@ func ContainsInt(s []int, k int) bool {
 	}
 	return false
 }
+
+// Any returns true if a store (slice or array) contains an element that fulfills the condition defined in the check function
+func Any(store interface{}, check func(interface{}) bool) bool {
+	switch reflect.TypeOf(store).Kind() {
+	case reflect.Slice,
+		reflect.Array:
+		s := reflect.ValueOf(store)
+		for i := 0; i < s.Len(); i++ {
+			if check(s.Index(i).Interface()) {
+				return true
+			}
+		}
+	}
+	return false
+}

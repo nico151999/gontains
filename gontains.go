@@ -1,6 +1,9 @@
 package gontains
 
-import "reflect"
+import (
+	"reflect"
+	"strings"
+)
 
 // Contains returns true if a store (slice or array) contains a specified value.
 func Contains(store interface{}, val interface{}) bool {
@@ -21,6 +24,16 @@ func Contains(store interface{}, val interface{}) bool {
 func ContainsString(s []string, k string) bool {
 	for _, e := range s {
 		if e == k {
+			return true
+		}
+	}
+	return false
+}
+
+// ContainsStringCaseInsensitive returns true if slice of strings s contains a string k while checking case insensitive
+func ContainsStringCaseInsensitive(s []string, k string) bool {
+	for _, e := range s {
+		if strings.ToLower(e) == strings.ToLower(k) {
 			return true
 		}
 	}

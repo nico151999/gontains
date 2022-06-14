@@ -64,3 +64,12 @@ func Any(store interface{}, check func(interface{}) bool) bool {
 	}
 	return false
 }
+
+func Generic[T comparable](store []T, check T) bool {
+	for _, element := range store {
+		if element == check {
+			return true
+		}
+	}
+	return false
+}

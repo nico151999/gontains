@@ -1,6 +1,8 @@
 package gontains
 
 import (
+	"fmt"
+	"strings"
 	"testing"
 )
 
@@ -42,7 +44,6 @@ func Test_Any(t *testing.T) {
 	}
 }
 
-
 func TestGeneric(t *testing.T) {
 	type args[T comparable] struct {
 		store []T
@@ -73,4 +74,48 @@ func TestGeneric(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestGenericFn(t *testing.T) {
+	type args struct {
+		store     []string
+		check     string
+		compareFn CompareFn[string]
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{
+			name: "Successful test with not equal casing ",
+			args: args{store: []string{"Some.One@mail.com", "Someone.Else@mail.com", "Third.Person@mail.com"}, check: "third.person@mail.com", compareFn: strings.EqualFold},
+			want: true,
+		},
+		{
+			name: "Successful test with equal casing ",
+			args: args{store: []string{"Some.One@mail.com", "Someone.Else@mail.com", "third.person@mail.com"}, check: "third.person@mail.com", compareFn: strings.EqualFold},
+			want: true,
+		},
+		{
+			name: "Unsuccessful test with lowercase custom comparer ",
+			args: args{store: []string{"Some.One@mail.com", "Someone.Else@mail.com"}, check: "third.person@mail.com", compareFn: strings.EqualFold},
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := GenericFn(tt.args.store, tt.args.check, tt.args.compareFn); got != tt.want {
+				t.Errorf("GenericFn() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+
+}
+
+func ExampleGenericFn() {
+	// Custom string comparer for ignoring casing
+	fmt.Println(GenericFn([]string{"Some.One@mail.com", "Someone.Else@mail.com"}, "third.person@mail.com", strings.EqualFold))
+	//Output: false
+
 }

@@ -73,3 +73,16 @@ func Generic[T comparable](store []T, check T) bool {
 	}
 	return false
 }
+
+// Can be a custom function or a builtin function like strings.EqualFold
+type CompareFn[T comparable] func(a T, b T) bool
+
+// Allows passing a custom function to compare with. GenericFn will return when compareFn returns true.
+func GenericFn[T comparable](store []T, check T, compareFn CompareFn[T]) bool {
+	for _, element := range store {
+		if compareFn(element, check) {
+			return true
+		}
+	}
+	return false
+}
